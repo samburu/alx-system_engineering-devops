@@ -1,0 +1,93 @@
+# Web Infrastructure Design
+
+This document explains the basic web infrastructure design for Tasks 0, 1, and 2, progressing from a simple single-server setup to a more scalable and fault-tolerant architecture.
+
+---
+
+## Task 0: Simple Web Infrastructure with One Server
+
+### Description
+This infrastructure uses:
+- **1 Server** with IP address `8.8.8.8`
+- **1 Web Server**: Nginx
+- **1 Application Server**: Hosting dynamic content (e.g. PHP, Python)
+- **1 Codebase**: Website files (HTML, CSS, JS, backend scripts)
+- **1 MySQL Database**
+- **1 Domain Name**: `foobar.com` with a `www` A record pointing to `8.8.8.8`
+
+### Flow:
+1. A user types `www.foobar.com` in the browser.
+2. DNS resolves `www.foobar.com` to `8.8.8.8` (A record).
+3. The browser sends an HTTP request to the server.
+4. **Nginx** (web server) receives the request and forwards it to the application server.
+5. **Application server** executes code, queries the **MySQL database** if needed.
+6. The response goes back through **Nginx** to the user’s browser.
+
+### Component Roles:
+- **Server**: Hosts everything (web, app, DB).
+- **Domain Name**: Human-friendly name to reach your server.
+- **A Record**: DNS record mapping `www.foobar.com` to IP `8.8.8.8`.
+- **Web Server (Nginx)**: Handles HTTP requests/responses.
+- **Application Server**: Processes dynamic backend logic.
+- **Database**: Stores and retrieves persistent data.
+- **Protocol**: HTTP over TCP/IP.
+
+### Limitations:
+- **SPOF**: If the server fails, the site goes down.
+- **No Scalability**: Cannot handle heavy traffic.
+- **Maintenance Downtime**: Updating requires restarting services.
+
+---
+
+## Task 1: Distributed Web Infrastructure
+
+### Description
+We add:
+- **1 Web Server** (Nginx) on a separate machine
+- **1 Application Server** (e.g. Gunicorn, PHP-FPM) on another machine
+- **1 Database Server** (MySQL) isolated on its own server
+
+### Reason:
+- Separation of concerns and load distribution.
+- Makes it easier to maintain, debug, and scale.
+
+### Flow:
+1. User accesses `www.foobar.com`.
+2. DNS resolves it to the IP of the web server.
+3. **Nginx** receives the request, forwards it to the app server.
+4. **App Server** queries **MySQL DB** as needed.
+5. Response goes back to the user.
+
+### Benefits:
+- No longer one server hosting everything.
+- Performance is improved.
+- Each part can be independently maintained.
+
+---
+
+## Task 2: Redundant Load-Balanced Infrastructure
+
+### Description
+We add:
+- **1 Load Balancer**: HAProxy
+- **Cluster of 2 Web Servers** behind HAProxy
+- **Multiple Application Servers**
+- **Single MySQL DB (optional: with replication)**
+
+### Why Add These:
+- **Load Balancer**: Distributes requests across multiple web/app servers.
+- **Redundancy**: Prevents downtime if one server fails.
+- **Improved Scalability**: Handles more traffic.
+
+### Flow:
+1. User accesses `www.foobar.com`.
+2. DNS points to **HAProxy** IP.
+3. HAProxy balances requests between web servers.
+4. Web server forwards to an available app server.
+5. App server accesses the database.
+6. Response sent back to user.
+
+### Benefits:
+- **High Availability**
+- **Scalability**
+- **Reduced SPOF**
