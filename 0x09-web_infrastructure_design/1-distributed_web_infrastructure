@@ -1,0 +1,21 @@
+## Task 1: Distributed Web Infrastructure
+
+### ![Task 1 Diagram](https://images2.imgbox.com/94/ae/5zfHTkY4_o.jpeg?download=true)
+
+### Description:
+
+- **2 Web Servers**:
+  - Improve availability and load distribution.
+- **1 Load Balancer**:
+  - Distributes incoming traffic across both servers.
+  - Prevents overload on a single server.
+- **1 Database**:
+  - Centralized MySQL server accessed by both web servers.
+- **1 Domain Name**:
+  - Requests go through DNS → Load Balancer → Web Servers.
+
+### Purpose:
+
+- Improves scalability, fault tolerance, and reliability of the web application.
+
+---
